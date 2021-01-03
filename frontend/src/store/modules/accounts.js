@@ -1,5 +1,7 @@
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
+import BurnerConnectProvider from "@burner-wallet/burner-connect-provider";
+import Authereum from "authereum";
 
 const state = {
   activeAccount: null,
@@ -7,6 +9,7 @@ const state = {
   chainId: null,
   chainName: null,
   ethersJs: null,
+  isConnected: false,
   provider: null,
   web3Modal: null
 };
@@ -28,11 +31,7 @@ const getters = {
     return state.web3Modal;
   },
   isUserConnected(state) {
-    if (state.activeAccount !== null) {
-      return true;
-    } else {
-      return false;
-    }
+    return state.isConnected;
   }
 };
 
@@ -41,58 +40,77 @@ const actions = {
   async initWeb3Modal({ commit }) {
     const providerOptions = {
       // MetaMask is enabled by default
-      // set other providers, like WalletConnect
+      // Find other providers here: https://github.com/Web3Modal/web3modal/tree/master/docs/providers
+      burnerconnect: {
+        package: BurnerConnectProvider // required
+      },
+      authereum: {
+        package: Authereum // required
+      }
     };
     
     const w3mObject = new Web3Modal({
-      cacheProvider: false, // optional
+      cacheProvider: true, // optional
       providerOptions // required
     });
 
+    // This will get deprecated soon. Setting it to false removes a warning from the console.
     window.ethereum.autoRefreshOnNetworkChange = false;
 
-    commit("setActiveAccount", window.ethereum.selectedAddress);
-    commit("setChainData", window.ethereum.chainId);
+    // if the user is flagged as already connected, automatically connect back to Web3Modal
+    if (localStorage.getItem('isConnected') === "true") {
+      let provider = await w3mObject.connect();
+      commit("setIsConnected", true);
+
+      commit("setActiveAccount", window.ethereum.selectedAddress);
+      commit("setChainData", window.ethereum.chainId);
+      commit("setEthersProvider", provider);
+    }
+
     commit("setWeb3ModalInstance", w3mObject);
   },
 
   async connectWeb3Modal({ commit }) {
     let provider = await state.web3Modal.connect();
+    commit("setIsConnected", true);
+
     commit("setActiveAccount", window.ethereum.selectedAddress);
     commit("setChainData", window.ethereum.chainId);
     commit("setEthersProvider", provider);
   },
 
   async disconnectWeb3Modal({ commit }) {
-    commit("disconnect");
+    commit("disconnectWallet");
+    commit("setIsConnected", false);
   },
 
   async ethereumListener({ commit }) {
+
     window.ethereum.on('accountsChanged', (accounts) => {
-      commit("setActiveAccount", accounts[0]);
-      commit("setEthersProvider", state.provider);
+      if (state.isConnected) {
+        commit("setActiveAccount", accounts[0]);
+        commit("setEthersProvider", state.provider);
+      }
     });
 
     window.ethereum.on('chainChanged', (chainId) => {
       commit("setChainData", chainId);
     });
+
   }
   
 };
 
 const mutations = {
 
-  disconnect(state) {
+  async disconnectWallet(state) {
     state.activeAccount = null;
-    state.chainId = null;
     state.ethersJs = null;
-    if (state.provider.close) {
-      state.provider.close();
+    if (state.provider.close && state.provider !== null) {
+      await state.provider.close();
     }
     state.provider = null;
-    state.web3Modal.clearCachedProvider();
-    
-    console.log("ethereum isConnected(): " + window.ethereum.isConnected());
+    await state.web3Modal.clearCachedProvider();
   },
 
   setActiveAccount(state, selectedAddress) {
@@ -118,24 +136,23 @@ const mutations = {
       case "0x5":
         state.chainName = "Goerli";
         break;
-      case "0x539": // 1337
-      case "0x1691": // 5777
+      case "0x539": // 1337 (often used on localhost)
+      case "0x1691": // 5777 (default in Ganache)
       default:
         state.chainName = "Localhost";
         break;
     }
   },
 
-  setEthersProvider(state, provider) {
-    console.log("provider:");
-    console.log(provider);
-
-    if(!provider) {
-      provider = window.ethereum;
-    }
-
+  async setEthersProvider(state, provider) {
     state.provider = provider;
     state.ethersJs = new ethers.providers.Web3Provider(provider);
+  },
+
+  setIsConnected(state, isConnected) {
+    state.isConnected = isConnected;
+    // add to persistent storage so that the user can be logged back in when revisiting website
+    localStorage.setItem('isConnected', isConnected);
   },
 
   setWeb3ModalInstance(state, w3mObject) {
