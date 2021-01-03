@@ -2,7 +2,11 @@
   <b-container>
     <h1>Main page</h1>
 
-    <p>This dApp allows you to read and set the value in the Calc.sol smart contract.</p>
+    <p>This is a starter template with a dummy smart contract (Calc.sol) to jumpstart your project.</p>
+
+    <p>
+      <strong>Your current chain:</strong> {{getChainName}}
+    </p>
 
     <router-link to="/set-value">
       <b-button size="lg" class="btn-success">Go set a new value!</b-button>
@@ -12,8 +16,13 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "Main",
+  computed: {
+    ...mapGetters("accounts", ["getChainName"]),
+  },
 }
 </script>
 

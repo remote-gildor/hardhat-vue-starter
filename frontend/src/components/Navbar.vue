@@ -14,7 +14,7 @@
 
         <b-nav-item v-if="!isUserConnected" @click="login">Connect your wallet</b-nav-item>
         <b-nav-item v-if="isUserConnected">{{getActiveAccount}}</b-nav-item>
-        <b-nav-item v-if="isUserConnected">Logout</b-nav-item>
+        <b-nav-item v-if="isUserConnected" @click="logout">Disconnect</b-nav-item>
       </b-navbar-nav>
     </b-collapse>
     
@@ -31,12 +31,17 @@ export default {
   },
   created() {
     this.$store.dispatch("accounts/initWeb3Modal");
+    this.$store.dispatch("accounts/ethereumListener");
   },
   methods: {
-    ...mapActions("accounts", ["connectWeb3Modal"]),
+    ...mapActions("accounts", ["connectWeb3Modal", "disconnectWeb3Modal"]),
 
     login() {
       this.connectWeb3Modal();
+    },
+
+    logout() {
+      this.disconnectWeb3Modal();
     }
   }
 }

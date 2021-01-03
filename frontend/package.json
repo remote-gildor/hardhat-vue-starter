@@ -11,6 +11,7 @@
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.6.5",
+    "ethers": "^5.0.24",
     "vue": "^2.6.11",
     "vue-router": "^3.4.9",
     "vue-toasted": "^1.1.28",
