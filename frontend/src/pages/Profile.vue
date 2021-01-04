@@ -7,7 +7,7 @@
 
         <b-card class="mb-2">
 
-          <Gravatar class="img-fluid" :email="getActiveAccount" default-img="robohash" :size=200 />
+          <Gravatar v-if="getActiveAccount" class="img-fluid" :email="getActiveAccount" default-img="robohash" :size=200 />
 
           <b-card-text class="mt-2">
             <p>{{ getActiveAccount }}</p>
@@ -34,7 +34,7 @@ export default {
     ...mapGetters("accounts", ["getActiveAccount", "getActiveBalanceEth"]),
   },
   created() {
-    this.$store.dispatch("accounts/fetchActiveBalance");
+    
   },
 }
 </script>

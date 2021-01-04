@@ -68,6 +68,7 @@ const actions = {
       commit("setActiveAccount", window.ethereum.selectedAddress);
       commit("setChainData", window.ethereum.chainId);
       commit("setEthersProvider", providerW3m);
+      actions.fetchActiveBalance({ commit });
     }
 
     commit("setWeb3ModalInstance", w3mObject);
@@ -80,6 +81,7 @@ const actions = {
     commit("setActiveAccount", window.ethereum.selectedAddress);
     commit("setChainData", window.ethereum.chainId);
     commit("setEthersProvider", providerW3m);
+    actions.fetchActiveBalance({ commit });
   },
 
   async disconnectWeb3Modal({ commit }) {
@@ -93,6 +95,7 @@ const actions = {
       if (state.isConnected) {
         commit("setActiveAccount", accounts[0]);
         commit("setEthersProvider", state.providerW3m);
+        actions.fetchActiveBalance({ commit });
       }
     });
 
