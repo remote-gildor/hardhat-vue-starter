@@ -101,6 +101,8 @@ const actions = {
 
     window.ethereum.on('chainChanged', (chainId) => {
       commit("setChainData", chainId);
+      commit("setEthersProvider", state.providerW3m);
+      actions.fetchActiveBalance({ commit });
     });
 
   },
@@ -123,7 +125,7 @@ const mutations = {
     }
     state.providerW3m = null;
     await state.web3Modal.clearCachedProvider();
-    
+
     window.location.href = '../'; // redirect to the Main page
   },
 
