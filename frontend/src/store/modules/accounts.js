@@ -116,12 +116,15 @@ const mutations = {
 
   async disconnectWallet(state) {
     state.activeAccount = null;
+    state.activeBalance = 0;
     state.providerEthers = null;
     if (state.providerW3m.close && state.providerW3m !== null) {
       await state.providerW3m.close();
     }
     state.providerW3m = null;
     await state.web3Modal.clearCachedProvider();
+    
+    window.location.href = '../'; // redirect to the Main page
   },
 
   setActiveAccount(state, selectedAddress) {

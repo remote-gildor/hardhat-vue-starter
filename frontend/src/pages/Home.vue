@@ -8,21 +8,26 @@
       <strong>Your current chain:</strong> {{getChainName}}
     </p>
 
-    <router-link to="/set-value">
-      <b-button size="lg" class="btn-success">Go set a new value!</b-button>
+    <router-link v-if="isUserConnected" to="/set-value">
+      <b-button size="lg" class="btn-primary">Go set a new value!</b-button>
     </router-link>
+
+    <b-button v-if="!isUserConnected" size="lg" class="btn-success" @click="connectWeb3Modal">Connect your wallet!</b-button>
 
   </b-container>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Main",
   computed: {
-    ...mapGetters("accounts", ["getChainName"]),
+    ...mapGetters("accounts", ["getChainName", "isUserConnected"]),
   },
+  methods: {
+    ...mapActions("accounts", ["connectWeb3Modal"]),
+  }
 }
 </script>
 
