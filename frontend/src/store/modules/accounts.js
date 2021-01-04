@@ -8,9 +8,9 @@ const state = {
   activeBalance: 0,
   chainId: null,
   chainName: null,
-  ethersJs: null,
+  providerEthers: null, // this is "provider" for Ethers.js
   isConnected: false,
-  provider: null,
+  providerW3m: null, // this is "provider" from Web3Modal
   web3Modal: null
 };
 
@@ -18,8 +18,11 @@ const getters = {
   getActiveAccount(state) {
     return state.activeAccount;
   },
-  getActiveBalance(state) {
+  getActiveBalanceWei(state) {
     return state.activeBalance;
+  },
+  getActiveBalanceEth(state) {
+    return ethers.utils.formatEther(state.activeBalance);
   },
   getChainId(state) {
     return state.chainId;
@@ -59,24 +62,24 @@ const actions = {
 
     // if the user is flagged as already connected, automatically connect back to Web3Modal
     if (localStorage.getItem('isConnected') === "true") {
-      let provider = await w3mObject.connect();
+      let providerW3m = await w3mObject.connect();
       commit("setIsConnected", true);
 
       commit("setActiveAccount", window.ethereum.selectedAddress);
       commit("setChainData", window.ethereum.chainId);
-      commit("setEthersProvider", provider);
+      commit("setEthersProvider", providerW3m);
     }
 
     commit("setWeb3ModalInstance", w3mObject);
   },
 
   async connectWeb3Modal({ commit }) {
-    let provider = await state.web3Modal.connect();
+    let providerW3m = await state.web3Modal.connect();
     commit("setIsConnected", true);
 
     commit("setActiveAccount", window.ethereum.selectedAddress);
     commit("setChainData", window.ethereum.chainId);
-    commit("setEthersProvider", provider);
+    commit("setEthersProvider", providerW3m);
   },
 
   async disconnectWeb3Modal({ commit }) {
@@ -89,7 +92,7 @@ const actions = {
     window.ethereum.on('accountsChanged', (accounts) => {
       if (state.isConnected) {
         commit("setActiveAccount", accounts[0]);
-        commit("setEthersProvider", state.provider);
+        commit("setEthersProvider", state.providerW3m);
       }
     });
 
@@ -97,6 +100,11 @@ const actions = {
       commit("setChainData", chainId);
     });
 
+  },
+
+  async fetchActiveBalance({ commit }) {
+    let balance = await state.providerEthers.getBalance(state.activeAccount);
+    commit("setActiveBalance", balance);
   }
   
 };
@@ -105,16 +113,20 @@ const mutations = {
 
   async disconnectWallet(state) {
     state.activeAccount = null;
-    state.ethersJs = null;
-    if (state.provider.close && state.provider !== null) {
-      await state.provider.close();
+    state.providerEthers = null;
+    if (state.providerW3m.close && state.providerW3m !== null) {
+      await state.providerW3m.close();
     }
-    state.provider = null;
+    state.providerW3m = null;
     await state.web3Modal.clearCachedProvider();
   },
 
   setActiveAccount(state, selectedAddress) {
     state.activeAccount = selectedAddress;
+  },
+
+  setActiveBalance(state, balance) {
+    state.activeBalance = balance;
   },
 
   setChainData(state, chainId) {
@@ -144,9 +156,9 @@ const mutations = {
     }
   },
 
-  async setEthersProvider(state, provider) {
-    state.provider = provider;
-    state.ethersJs = new ethers.providers.Web3Provider(provider);
+  async setEthersProvider(state, providerW3m) {
+    state.providerW3m = providerW3m;
+    state.providerEthers = new ethers.providers.Web3Provider(providerW3m);
   },
 
   setIsConnected(state, isConnected) {
