@@ -9,10 +9,10 @@
     </p>
 
     <router-link v-if="isUserConnected" to="/set-value">
-      <b-button size="lg" class="btn-primary">Go set a new value!</b-button>
+      <b-button size="lg" variant="primary">Go set a new value!</b-button>
     </router-link>
 
-    <b-button v-if="!isUserConnected" size="lg" class="btn-success" @click="connectWeb3Modal">Connect your wallet!</b-button>
+    <b-button v-if="!isUserConnected" size="lg" variant="success" @click="connectWeb3Modal">Connect your wallet!</b-button>
 
   </b-container>
 </template>

@@ -1,39 +1,45 @@
 <template>
   <b-container>
-    <h1>Set a new value!</h1>
 
-    <div class="mb-3">
-      <b-card title="Current value">
-        <b-card-text>
-          <strong>Value:</strong> {{ getValue }}
-        </b-card-text>
-      </b-card>
-    </div>
+    <b-row class="mt-4 text-center">
+      <b-col md="4" offset-md="4">
+        <h1>Set a new value!</h1>
 
-    <div>
-      <b-card title="Set new value">
-        <b-card-text>
-          
-          <b-form @submit.prevent="onSubmit">
-            <b-form-group id="input-group-1" label-for="crowdsale-ether-field">
+        <div class="mb-3">
+          <b-card title="Current value">
+            <b-card-text>
+              <strong>Value:</strong> {{ getValue }}
+            </b-card-text>
+          </b-card>
+        </div>
 
-              <b-form-input 
-                  id="set-value-field" 
-                  v-model="newValue" 
-                  type="text" 
-                  required 
-                  placeholder="0.0"
-                  trim
-                >
-              </b-form-input>
+        <div>
+          <b-card title="Set new value">
+            <b-card-text>
+              
+              <b-form @submit.prevent="onSubmit">
+                <b-form-group id="input-group-1" label-for="crowdsale-ether-field">
 
-              <b-button class="mt-2" type="submit" variant="primary">Submit</b-button>
-            </b-form-group>
-          </b-form>
+                  <b-form-input 
+                    style="text-align:center"
+                    id="set-value-field" 
+                    v-model="newValue" 
+                    type="text" 
+                    required 
+                    placeholder="0"
+                    trim
+                  >
+                  </b-form-input>
 
-        </b-card-text>
-      </b-card>
-    </div>
+                  <b-button class="mt-2" type="submit" variant="primary">Submit</b-button>
+                </b-form-group>
+              </b-form>
+
+            </b-card-text>
+          </b-card>
+        </div>
+      </b-col>
+    </b-row>
 
   </b-container>
 </template>
@@ -62,11 +68,11 @@ export default {
     }
   },
   created() {
-
+    this.$store.dispatch("contracts/fetchNum");
   },
   data() {
     return {
-      newValue: "1"
+      newValue: null
     }
   },
   methods: {

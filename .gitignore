@@ -1,5 +1,7 @@
 node_modules
+.env
+#/frontend/src/contracts/*
 
 #Hardhat files
 /cache
-/frontend/src/artifacts
+/artifacts

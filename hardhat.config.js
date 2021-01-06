@@ -1,4 +1,5 @@
 require("@nomiclabs/hardhat-waffle");
+require('dotenv').config();
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -7,11 +8,14 @@ module.exports = {
   defaultNetwork: "hardhat",
 
   networks: {
-    hardhat: {
-    },
+    hardhat: {},
+    ganache: {
+      url: "http://127.0.0.1:7545/",
+      saveDeployments: true
+    }
     //goerli: {
-    //  url: "https://eth-goerli.alchemyapi.io/v2/<alchemy-key>",
-    //  accounts: ["<private-key>"]
+    //  url: "https://eth-goerli.alchemyapi.io/v2/" + process.env.ALCHEMY_API_KEY,
+    //  accounts: [process.env.ALCHEMY_DEPLOYMENT_KEY]
     //}
   },
 
@@ -19,7 +23,7 @@ module.exports = {
     sources: "./contracts",
     tests: "./test",
     cache: "./cache",
-    artifacts: "./frontend/src/artifacts"
+    artifacts: "./artifacts"
   },
 
   solidity: {

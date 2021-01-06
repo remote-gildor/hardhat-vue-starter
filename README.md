@@ -29,3 +29,9 @@ npx hardhat test
 ```bash
 npx hardhat run scripts/deploy.js --network goerli
 ```
+
+## Verify on Etherscan
+
+```bash
+hardhat --network mainnet etherscan-verify --api-key <apikey>
+```

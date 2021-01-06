@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 async function main() {
 
     const [deployer] = await ethers.getSigners();
@@ -9,10 +12,16 @@ async function main() {
     
     console.log("Account balance:", (await deployer.getBalance()).toString());
   
-    const Token = await ethers.getContractFactory("Token");
-    const token = await Token.deploy();
+    const contractFactory = await ethers.getContractFactory("Calc");
+    const contract = await contractFactory.deploy();
   
-    console.log("Token address:", token.address);
+    console.log("Contract address:", contract.address);
+    
+    // copy the contract JSON file to front-end and add the address field in it
+    let contractJsonFile = fs.readFileSync(path.join(__dirname, "../artifacts/contracts/Calc.sol/Calc.json"));
+    let contractJson = JSON.parse(contractJsonFile);
+    contractJson.address = contract.address; // add address to contract JSON
+    fs.writeFileSync(path.join(__dirname, "../frontend/src/contracts/Calc.json"), JSON.stringify(contractJson)); 
   }
   
   main()
