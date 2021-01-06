@@ -30,6 +30,9 @@ const getters = {
   getChainName(state) {
     return state.chainName;
   },
+  getProviderEthers(state) {
+    return state.providerEthers;
+  },
   getWeb3Modal(state) {
     return state.web3Modal;
   },

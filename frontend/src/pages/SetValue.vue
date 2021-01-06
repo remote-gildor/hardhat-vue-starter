@@ -8,7 +8,7 @@
         <div class="mb-3">
           <b-card title="Current value">
             <b-card-text>
-              <strong>Value:</strong> {{ getValue }}
+              <strong>Value:</strong> {{ getNum }}
             </b-card-text>
           </b-card>
         </div>
@@ -45,45 +45,49 @@
 </template>
 
 <script>
+import { ethers } from "ethers";
 import { mapGetters } from "vuex";
 
 export default {
   name: "Main",
   computed: {
-    ...mapGetters("accounts", ["activeAccount"]),
-    ...mapGetters("contracts", ["getContractData"]),
-
-    getValue() {
-      /*
-      let value = this.getContractData({
-        contract: "Value",
-        method: "getValue"
-      });
-
-      if (value === "loading") return "0";
-      
-      return value
-      */
-     return 0;
-    }
+    ...mapGetters("accounts", ["getActiveAccount", "getProviderEthers"]),
+    ...mapGetters("contracts", ["getNum", "getCalcAbi", "getCalcAddress"])
   },
   created() {
     this.$store.dispatch("contracts/fetchNum");
+    this.$store.dispatch("contracts/storeCalcAbi");
+    this.$store.dispatch("contracts/storeCalcAddress");
+
+    // get the contract instance
+    let signer = this.getProviderEthers.getSigner(); 
+    this.contract = new ethers.Contract(this.getCalcAddress, this.getCalcAbi, signer);
+
+    let component = this;
+
+    // set event listener
+    this.contract.on("NumberSet", (_from, value) => {
+      // show a toast
+      component.$toasted.show('The new number has been set to ' + value, {
+        type: 'success',
+        duration: 9000,
+        theme: "bubble",
+        position: "top-center"
+      });
+
+      // refresh the num value
+      component.$store.dispatch("contracts/fetchNum");
+    });
   },
   data() {
     return {
-      newValue: null
+      newValue: null,
+      contract: null
     }
   },
   methods: {
-    onSubmit() {
-      /*
-      this.drizzleInstance.contracts['Value'].methods['setValue'].cacheSend(
-        this.newValue,
-        {
-          from: this.activeAccount
-        }
-      )*/
+    async onSubmit() {
+      await this.contract.setNum(this.newValue);
     }
   }
 }
