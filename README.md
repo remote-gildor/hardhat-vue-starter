@@ -34,16 +34,25 @@ Example (`addresses.json`):
 ```json
 {
   "Token":{
-    "1337":"0x1Cf865998BD3f20eB6BCdAda339AFf6ef2621beb",
+    "1337":"0x78afecb367f032d93eDf865Ada339AFf6ef2621b",
     "3":"0x5FbDB2315678afecb367f032d93F642f64180aa3",
     "1":"0xE2Df865998BD3f20117e037d1293367f032d93F6"
   },
   "Farm":{
-    "1337":"0x1Cf865998BD3f20eB6BCdAda339AFf6ef2621beb",
-    "3":"0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    "1337":"0x1Cf865998BD3f20eB6BCdAda339aa8BD3f2e26eb",
+    "3":"0x998BD3f20eB6Bafecb3673f201ca17e037d10aa3",
     "1":"0xBCdAda33b67815678afecb365998BD3f2e26BCdA"
   }
 }
+```
+
+## npm install
+
+Run installations in both root and in the frontend folder:
+
+```bash
+npm install
+cd frontend && npm install
 ```
 
 ## Run Vue app
