@@ -1,6 +1,6 @@
 node_modules
 .env
-#/frontend/src/contracts/*
+/frontend/src/contracts/*
 
 #Hardhat files
 /cache
