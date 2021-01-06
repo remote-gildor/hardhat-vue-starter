@@ -24,6 +24,12 @@ cd frontend && npm run serve
 npx hardhat test
 ```
 
+## Deployment to ganache
+
+```bash
+npx hardhat run scripts/deploy.js --network ganache
+```
+
 ## Deployment to a remote blockchain
 
 ```bash
@@ -33,5 +39,5 @@ npx hardhat run scripts/deploy.js --network goerli
 ## Verify on Etherscan
 
 ```bash
-hardhat --network mainnet etherscan-verify --api-key <apikey>
+npx hardhat --network mainnet etherscan-verify --api-key <apikey>
 ```
