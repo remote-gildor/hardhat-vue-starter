@@ -10,8 +10,6 @@
   "dependencies": {
     "@burner-wallet/burner-connect-provider": "^0.1.1",
     "authereum": "^0.1.0",
-    "bootstrap": "^4.5.3",
-    "bootstrap-vue": "^2.21.2",
     "core-js": "^3.6.5",
     "ethers": "^5.0.24",
     "vue": "^2.6.11",

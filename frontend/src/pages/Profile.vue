@@ -1,24 +1,23 @@
 <template>
-  <b-container class="text-center">
-    <h1>Profile</h1>
+  <div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">Your profile</h1>
+    </div>
 
-    <b-row class="mt-4">
-      <b-col md="4" offset-md="4">
+    <div class="row">
+      <div class="col-md-5 text-center">
+        <div class="card">
+          <div class="card-body">
+            <Gravatar v-if="getActiveAccount" class="img-fluid" :email="getActiveAccount" default-img="robohash" :size=200 />
 
-        <b-card class="mb-2">
-
-          <Gravatar v-if="getActiveAccount" class="img-fluid" :email="getActiveAccount" default-img="robohash" :size=200 />
-
-          <b-card-text class="mt-2">
             <p>{{ getActiveAccount }}</p>
             <p><strong>Your ETH balance:</strong> {{ Number(getActiveBalanceEth).toFixed(4) }} ETH</p>
-          </b-card-text>
-
-        </b-card>
-
-      </b-col>
-    </b-row>
-  </b-container>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
 </template>
 
 <script>
@@ -32,9 +31,6 @@ export default {
   },
   computed: {
     ...mapGetters("accounts", ["getActiveAccount", "getActiveBalanceEth"]),
-  },
-  created() {
-    
-  },
+  }
 }
 </script>

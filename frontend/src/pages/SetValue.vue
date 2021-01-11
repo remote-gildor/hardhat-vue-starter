@@ -1,47 +1,45 @@
 <template>
-  <b-container>
+  <div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">Set a new value</h1>
+    </div>
 
-    <b-row class="mt-4 text-center">
-      <b-col md="4" offset-md="4">
-        <h1>Set a new value!</h1>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Current value</h5>
 
-        <div class="mb-3">
-          <b-card title="Current value">
-            <b-card-text>
+            <p class="card-text">
               <strong>Value:</strong> {{ getNum }}
-            </b-card-text>
-          </b-card>
+            </p>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <div>
-          <b-card title="Set new value">
-            <b-card-text>
-              
-              <b-form @submit.prevent="onSubmit">
-                <b-form-group id="input-group-1" label-for="crowdsale-ether-field">
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
 
-                  <b-form-input 
-                    style="text-align:center"
-                    id="set-value-field" 
-                    v-model="newValue" 
-                    type="text" 
-                    required 
-                    placeholder="0"
-                    trim
-                  >
-                  </b-form-input>
+            <h5 class="card-title">Set new value</h5>
 
-                  <b-button class="mt-2" type="submit" variant="primary">Submit</b-button>
-                </b-form-group>
-              </b-form>
+            <form @submit.prevent="onSubmit">
+              <div class="mb-3">
+                <label for="valField" class="form-label">Enter new value</label>
+                <input id="valField" v-model="newValue" type="text" class="form-control" :placeholder="Number(getNum) + 1">
+              </div>
 
-            </b-card-text>
-          </b-card>
+              <button type="submit" class="btn btn-outline-primary">Submit</button>
+            </form>
+
+          </div>
         </div>
-      </b-col>
-    </b-row>
+      </div>
+    </div>
 
-  </b-container>
+  </div>
 </template>
 
 <script>
@@ -59,25 +57,29 @@ export default {
     this.$store.dispatch("contracts/storeCalcAbi");
     this.$store.dispatch("contracts/storeCalcAddress");
 
-    // get the contract instance
-    let signer = this.getProviderEthers.getSigner(); 
-    this.contract = new ethers.Contract(this.getCalcAddress, this.getCalcAbi, signer);
+    // if web3 provider has not been yet loaded, redirect to root 
+    if (!this.getProviderEthers) {
+      document.location.href="/";
+    } else {
+      // get the contract instance
+      let signer = this.getProviderEthers.getSigner(); 
+      this.contract = new ethers.Contract(this.getCalcAddress, this.getCalcAbi, signer);
+      let component = this;
 
-    let component = this;
+      // set event listener
+      this.contract.on("NumberSet", (_from, value) => {
+        // show a toast
+        component.$toasted.show('The new number has been set to ' + value, {
+          type: 'success',
+          duration: 5000,
+          theme: "bubble",
+          position: "top-center"
+        });
 
-    // set event listener
-    this.contract.on("NumberSet", (_from, value) => {
-      // show a toast
-      component.$toasted.show('The new number has been set to ' + value, {
-        type: 'success',
-        duration: 9000,
-        theme: "bubble",
-        position: "top-center"
+        // refresh the num value
+        component.$store.dispatch("contracts/fetchNum");
       });
-
-      // refresh the num value
-      component.$store.dispatch("contracts/fetchNum");
-    });
+    }
   },
   data() {
     return {
@@ -92,7 +94,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

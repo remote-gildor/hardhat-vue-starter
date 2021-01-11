@@ -1,36 +1,28 @@
 <template>
-  <b-container>
-    <h1>Main page</h1>
+  <div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">Welcome to Value Setter!</h1>
+    </div>
 
     <p>This is a starter template with a dummy smart contract (Calc.sol) to jumpstart your project.</p>
 
-    <p>
+    <p v-if="isUserConnected">
       <strong>Your current chain:</strong> {{getChainName}}
     </p>
 
     <router-link v-if="isUserConnected" to="/set-value">
-      <b-button size="lg" variant="primary">Go set a new value!</b-button>
+      <button type="button" class="btn btn-outline-primary btn-lg">Go set a new value!</button>
     </router-link>
-
-    <b-button v-if="!isUserConnected" size="lg" variant="success" @click="connectWeb3Modal">Connect your wallet!</b-button>
-
-  </b-container>
+  </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
-  name: "Main",
+  name: "Home",
   computed: {
     ...mapGetters("accounts", ["getChainName", "isUserConnected"]),
   },
-  methods: {
-    ...mapActions("accounts", ["connectWeb3Modal"]),
-  }
 }
 </script>
-
-<style>
-
-</style>
