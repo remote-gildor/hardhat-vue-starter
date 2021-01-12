@@ -7,21 +7,23 @@ A starter template for Ethereum dApps that uses the following tools:
 - ethers.js
 - Vue & Vuex
 - Web3Modal
-- Vue Bootstrap
+- Bootstrap 5
 - Vue Toasted
 - Vue Gravatar
 
 ## Features
 
-### Seamless connect/disconnect wallet experience
+### Seamless connect/disconnect wallet experience (using Web3Modal)
 
 Web3Modal is used to support various different Ethereum wallets. When user switches between accounts and even chains, the UI quickly notices that and adapts to the change (account and ETH balance data are refreshed).
+
+![](assets/web3modal.png)
 
 ### Alert when not on mainnet
 
 If user's wallet is not set to Mainnet, an unobtrusive yellow alert band shows up just above the navigation bar. The alert notifies the user which (testnet) chain they are currently using.
 
-![](assets/yellow-alert-band.png)
+![](assets/chain-alert.png)
 
 ### Storing contract addresses and ABIs on front-end
 
